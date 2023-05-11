@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 10vw 10vw 10vw;
+  grid-template-rows: 10vw 10vw 10vw;
+}
+.container div {
+  border: 1px solid blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+}
+
+/*# sourceMappingURL=styles.css.map */
