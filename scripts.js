@@ -25,15 +25,85 @@ const gameController = (() => {
   // function getPlayerTurn
   const getPlayerTurn = () => isPlayerOneTurn;
 
+  // function turnCounter
+  let turnCount = 0;
+  const getTurnCount = () => {
+    turnCount++;
+    return turnCount;
+  };
+
   // function addMarker to array
   const addMarker = (marker, row, col) => {
     gameBoard[row][col] = marker;
   };
 
   // function checkWinCond
+  const checkWinCond = () => {
+    let win = false;
+    let tempMarker = "";
+    // check horizontal directions
+    for (let i = 0; i < 3; i++) {
+      tempMarker = gameBoard[i][0];
+      if (
+        tempMarker === gameBoard[i][1] &&
+        tempMarker === gameBoard[i][2] &&
+        win === false
+      ) {
+        displayController.sayWinner(tempMarker);
+        win = true;
+        break;
+      }
+    }
+    // check vertical directions
+    for (let i = 0; i < 3; i++) {
+      tempMarker = gameBoard[0][i];
+      if (
+        tempMarker === gameBoard[1][i] &&
+        tempMarker === gameBoard[2][i] &&
+        win === false
+      ) {
+        displayController.sayWinner(tempMarker);
+        win = true;
+        break;
+      }
+    }
+    // check diagonals
+    tempMarker = gameBoard[0][0];
+    if (
+      tempMarker === gameBoard[1][1] &&
+      tempMarker === gameBoard[2][2] &&
+      win === false
+    ) {
+      displayController.sayWinner(tempMarker);
+      win = true;
+    }
+
+    tempMarker = gameBoard[0][2];
+    if (
+      tempMarker === gameBoard[1][1] &&
+      tempMarker === gameBoard[2][0] &&
+      win === false
+    ) {
+      displayController.sayWinner(tempMarker);
+      win = true;
+    }
+
+    // check for tie
+    if (gameController.getTurnCount() === 9 && win === false) {
+      displayController.sayTie();
+    }
+  };
+
   // function resetGame
 
-  return { getGameBoard, changePlayerTurn, getPlayerTurn, addMarker };
+  return {
+    getGameBoard,
+    changePlayerTurn,
+    getPlayerTurn,
+    getTurnCount,
+    addMarker,
+    checkWinCond,
+  };
 })();
 
 const displayController = (() => {
@@ -46,7 +116,6 @@ const displayController = (() => {
     }
 
     const tempGameBoard = gameController.getGameBoard();
-
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 3; x++) {
         const tile = document.createElement("div");
@@ -76,6 +145,7 @@ const displayController = (() => {
             }
             displayController.updateBoard();
             gameController.changePlayerTurn();
+            gameController.checkWinCond();
           }
         });
 
@@ -83,7 +153,22 @@ const displayController = (() => {
       }
     }
   };
-  return { updateBoard };
+
+  // announce winner
+  const sayWinner = (marker) => {
+    if (marker === playerOne.getMarker()) {
+      console.log("Player one wins");
+    } else if (marker === playerTwo.getMarker()) {
+      console.log("Player two wins");
+    }
+  };
+
+  // announce tie
+  const sayTie = () => {
+    console.log("Tie!");
+  };
+
+  return { updateBoard, sayWinner, sayTie };
 })();
 
 const Player = (marker) => {
