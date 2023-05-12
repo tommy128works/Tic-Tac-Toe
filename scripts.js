@@ -1,37 +1,56 @@
-let gameBoard = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
+const gameController = (() => {
+  let gameBoard = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+  ];
+  // function getGameBoard
 
-function updateBoard() {
-  const board = document.getElementById("gameBoard");
+  // function resetGame
 
-  while (board.hasChildNodes()) {
-    board.removeChild(board.firstChild);
-  }
+  // function getPlayerTurn
 
-  for (let y = 0; y < 3; y++) {
-    for (let x = 0; x < 3; x++) {
-      const tile = document.createElement("div");
-      if (gameBoard[y][x] === 1) {
-        tile.textContent = "X";
-        tile.dataset.isFree = 0;
-      } else if (gameBoard[y][x] === 0) {
-        tile.textContent = "O";
-        tile.dataset.isFree = 0;
-      } else {
-        tile.textContent = "";
-        tile.dataset.isFree = 1;
+  // function addMarker to array
+  const addMarker = (player, row, col) => {
+    gameBoard[col][row] = player.getMarker();
+  };
+  // function checkWinCond
+})();
+
+const displayController = (() => {
+  // function updateBoard
+  function updateBoard() {
+    const board = document.getElementById("gameBoard");
+
+    while (board.hasChildNodes()) {
+      board.removeChild(board.firstChild);
+    }
+
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        const tile = document.createElement("div");
+        tile.dataset.col = x;
+        tile.dataset.row = y;
+        if (gameBoard[y][x] === null) {
+          tile.dataset.isFree = 1;
+        } else {
+          tile.dataset.isFree = 0;
+          tile.textContent = gameBoard[y][x];
+        }
+        tile.addEventListener("click", (event) => {
+          // need to change this to keep track of player turn
+          addMarker(
+            player,
+            event.target.getAttribute("data-row"),
+            event.target.getAttribute("data-col")
+          );
+        });
+
+        board.appendChild(tile);
       }
-      tile.addEventListener("click");
-      // where should i put the click function
-      // updates array with player's marker
-
-      board.appendChild(tile);
     }
   }
-}
+})();
 
 const Player = (marker) => {
   const getMarker = () => marker;
@@ -42,12 +61,4 @@ const Player = (marker) => {
 const playerOne = Player("X");
 const playerTwo = Player("O");
 
-// add to tile div "onclick" for free spaces if data-isFree = 1
-// data-isFree = 0 if taken
-
-// update array
-// assign 1 or 0 depending on which player's turn it is
-
-// update board
-
-updateBoard();
+// updateBoard();
